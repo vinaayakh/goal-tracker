@@ -1,0 +1,104 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+
+  /* Surface palette — deep space dark */
+  --color-base: #08080f;
+  --color-surface: #11121d;
+  --color-surface-2: #171927;
+  --color-elevated: #1d2032;
+  --color-border: #262a3d;
+  --color-border-soft: #1d2030;
+
+  --color-ink: #f4f5fb;
+  --color-ink-soft: #aab0c6;
+  --color-ink-faint: #6b7088;
+
+  /* Brand accents (gradient stops) */
+  --color-violet: #8b5cf6;
+  --color-indigo: #6366f1;
+  --color-cyan: #22d3ee;
+  --color-emerald: #34d399;
+  --color-amber: #fbbf24;
+  --color-rose: #fb7185;
+
+  --radius-xl2: 1.5rem;
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-base);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* Ambient gradient backdrop */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(60rem 60rem at 15% -10%, rgba(139, 92, 246, 0.18), transparent 60%),
+      radial-gradient(50rem 50rem at 110% 10%, rgba(34, 211, 238, 0.12), transparent 55%),
+      radial-gradient(50rem 50rem at 50% 120%, rgba(52, 211, 153, 0.1), transparent 55%);
+    pointer-events: none;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+}
+
+@layer utilities {
+  /* Glassmorphism card surface */
+  .glass {
+    background: linear-gradient(
+      155deg,
+      rgba(255, 255, 255, 0.06),
+      rgba(255, 255, 255, 0.015)
+    );
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.05) inset,
+      0 20px 40px -24px rgba(0, 0, 0, 0.8);
+  }
+
+  .glass-hover:hover {
+    border-color: rgba(255, 255, 255, 0.16);
+    background: linear-gradient(
+      155deg,
+      rgba(255, 255, 255, 0.09),
+      rgba(255, 255, 255, 0.025)
+    );
+  }
+
+  .text-gradient {
+    background: linear-gradient(120deg, #c4b5fd, #67e8f9);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
