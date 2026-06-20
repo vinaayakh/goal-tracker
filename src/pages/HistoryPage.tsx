@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Check, TrendingUp } from 'lucide-react'
+import { Check, Download, TrendingUp, Upload } from 'lucide-react'
 import { PageTransition } from '../components/layout/PageTransition'
 import { useActivityFeed } from '../store/hooks'
 import { useStore } from '../store/useStore'
@@ -9,6 +9,8 @@ import { accent } from '../lib/theme'
 import { today, prettyDate, fromNowDays } from '../lib/date'
 import type { FeedEntry } from '../store/selectors'
 import { cn } from '../lib/cn'
+import { Button } from '../components/ui/Button'
+import { exportBackup, importBackup } from '../lib/backup'
 
 function dayLabel(date: string): string {
   if (date === today()) return 'Today'
@@ -21,6 +23,22 @@ export function HistoryPage() {
   const goals = useStore((s) => s.goals)
   const navigate = useNavigate()
   const [filter, setFilter] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  function handleExport() {
+    exportBackup()
+  }
+
+  async function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    e.target.value = ''
+    try {
+      await importBackup(file)
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Import failed.')
+    }
+  }
 
   // Only show filter chips for goals that actually have entries.
   const goalsWithEntries = useMemo(() => {
@@ -46,11 +64,28 @@ export function HistoryPage() {
 
   return (
     <PageTransition>
-      <header className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-ink">Activity</h1>
-        <p className="text-ink-soft text-sm mt-1">
-          {feed.length} {feed.length === 1 ? 'entry' : 'entries'} logged
-        </p>
+      <header className="mb-6 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-ink">Activity</h1>
+          <p className="text-ink-soft text-sm mt-1">
+            {feed.length} {feed.length === 1 ? 'entry' : 'entries'} logged
+          </p>
+        </div>
+        <div className="flex items-center gap-2 shrink-0 pt-1">
+          <Button variant="soft" size="sm" onClick={handleExport}>
+            <Download size={14} /> Export
+          </Button>
+          <Button variant="soft" size="sm" onClick={() => fileInputRef.current?.click()}>
+            <Upload size={14} /> Import
+          </Button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".json"
+            className="hidden"
+            onChange={handleImport}
+          />
+        </div>
       </header>
 
       {goalsWithEntries.length > 0 && (
