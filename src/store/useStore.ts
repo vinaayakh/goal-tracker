@@ -161,6 +161,15 @@ export const useStore = create<StoreState>()(
     {
       name: 'goaltracker-v1',
       storage: createJSONStorage(() => idbStorage),
+      // Schema version — increment this when the persisted shape changes and add a
+      // migration step below. Zustand will run migrate() automatically on load when
+      // the stored version is older than this number.
+      version: 1,
+      migrate: (stored, fromVersion) => {
+        // v0 → v1 (initial baseline, no structural change needed)
+        void fromVersion
+        return stored
+      },
       partialize: (s) => ({
         goals: s.goals,
         completions: s.completions,

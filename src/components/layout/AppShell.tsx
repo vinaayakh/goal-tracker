@@ -61,6 +61,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </button>
         <div className="mt-auto px-3 text-xs text-ink-faint">
           Local-first · your data stays on this device
+          <span className="block mt-0.5 opacity-50">v{__APP_VERSION__}</span>
         </div>
       </aside>
 
